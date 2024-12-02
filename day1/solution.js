@@ -13,6 +13,36 @@ function arrayContainsOnlyNumbers(array) {
     })
 }
 
+/**
+ * Returns the similarity score (sum of each term multiplied by
+ * the number of times it returns in the second list)
+ */
+function similarityScoreBetweenLocationLists(lists){
+    // check that the list of lists contains 2 lists
+    if (lists.length != 2){
+        throw new Error('Expecting two location lists');
+    }
+    // checks that the lists only contain integers
+    if (!lists.every(element => {
+        return arrayContainsOnlyNumbers(element)
+    })){
+        throw new Error('Expecting lists to only contain integers');
+    }
+
+    // sort the lists descending by size
+    let leftList = lists[0];
+    let rightList = lists[1];
+
+    // calculates the similarity scores
+    return leftList.map((item, index) => {
+        return item * rightList.filter((term) => term == item).length
+    })
+    // summates the similarity scores
+    .reduce((result, item ) => {
+        return result + item
+    });
+}
+
 
 /**
  * Takes in an array of two arrays
@@ -89,6 +119,7 @@ async function inputToExpectedStructure(filename){
         const locationLists = await inputToExpectedStructure(filename);
         console.log(locationLists);
         console.log(totalDistanceBetweenLocationLists(locationLists));
+        console.log(similarityScoreBetweenLocationLists(locationLists));
     }
     catch (e){
         console.log(e);
@@ -96,4 +127,4 @@ async function inputToExpectedStructure(filename){
 })();
 
 
-module.exports = { totalDistanceBetweenLocationLists,  inputToExpectedStructure }
+module.exports = { totalDistanceBetweenLocationLists, similarityScoreBetweenLocationLists, inputToExpectedStructure }
